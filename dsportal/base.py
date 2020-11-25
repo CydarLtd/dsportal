@@ -390,7 +390,7 @@ class Worker(object):
             try:
                 while True:
                     response = self.result_queue.get_nowait()
-                    await callback(response)
+                    callback(response)
             except queue.Empty:
                 pass
             except ItemExpired:
