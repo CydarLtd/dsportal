@@ -717,7 +717,7 @@ class GithubExposureCheck(HealthCheck):
         r.raise_for_status()
 
         public_repos = [repo["name"] for repo in r.json()]
-        exposed_repos = set(expected_repos) - set(public_repos)
+        exposed_repos = set(public_repos) - set(expected_repos)
 
         if len(exposed_repos) > 0:
             return {"healthy": False, "reason": "Unexpectedly public: %s" % ", ".join(str(x) for x in exposed_repos)}
