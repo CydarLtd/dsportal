@@ -716,11 +716,11 @@ class GithubExposureCheck(HealthCheck):
         r = requests.get("https://api.github.com/users/%s/repos" % username, timeout=5)
         r.raise_for_status()
 
-        repos_exposed = [repo["name"] for repo in r.json()]
+        public_repos = [repo["name"] for repo in r.json()]
+        exposed_repos = set(expected_repos) - set(public_repos)
 
-        for repo in repos_exposed:
-            if repo not in expected_repos:
-                return {"healthy": True, "reason": "%s repo is unexpectedly public"}
+        if len(exposed_repos) > 0:
+            return {"healthy": False, "reason": "Unexpectedly public: %s" % ", ".join(str(x) for x in exposed_repos)}
 
         return {"healthy": True, "reason": "No unexpected repositories are public"}
 
